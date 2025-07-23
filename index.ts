@@ -4,12 +4,20 @@ import * as play from "play-dl";
 
 // ✅ Configura cookies (via variável de ambiente do Railway)
 if (process.env.YT_COOKIE) {
-  play.setToken({
-    youtube: {
-      cookie: process.env.YT_COOKIE
-    }
-  });
-  console.log("✅ Cookies do YouTube configurados com sucesso!");
+  const cookies = process.env.YT_COOKIE_BASE64
+  ? Buffer.from(process.env.YT_COOKIE_BASE64, 'base64').toString('utf-8')
+  : null;
+
+  if (!cookies) {
+    console.warn("⚠️ Falha no decode da cookie.");
+  } else {
+    play.setToken({
+      youtube: {
+        cookie: cookies
+      }
+    });
+    console.log("✅ Cookies do YouTube configurados com sucesso!");
+  }  
 } else {
   console.warn("⚠️ Nenhum cookie configurado! Alguns vídeos podem falhar.");
 }
